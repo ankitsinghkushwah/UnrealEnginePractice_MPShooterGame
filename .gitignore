@@ -1,0 +1,51 @@
+# === Unreal Engine 5.6 GitIgnore (Proper Asset Tracking) === #
+
+# 1. Build & Cache Directories (Should Ignore) #
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+
+# 2. IDE & Editor Temp Files #
+.vs/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+*.user
+*.userprefs
+.idea/
+*.xcworkspace
+*.xcodeproj
+
+# 3. Debug & Log Files #
+*.pdb
+*.ilk
+*.log
+*.obj
+
+# 4. Platform-Specific Junk #
+.DS_Store
+Thumbs.db
+
+# 5. Shader Cache (Can Be Regenerated) #
+ShaderCache/
+
+# 6. Localization (Optional) #
+Content/Localizations/
+*.archive
+*.pot
+*.po
+
+# 7. Crash Reports #
+CrashReportClient/
+
+# 8. VS Code (Optional) #
+.vscode/
+
+# 9. Python Cache (If Using Python) #
+__pycache__/
+*.pyc

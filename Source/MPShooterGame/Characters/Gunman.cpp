@@ -1,0 +1,91 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Gunman.h"
+
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Physics/Experimental/PhysScene_Chaos.h"
+
+// Sets default values
+AGunman::AGunman()
+{
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
+	mSpringArm->SetupAttachment(GetMesh());
+	mSpringArm->TargetArmLength = 600.0f;
+	mSpringArm->bUsePawnControlRotation = true;
+
+	mFollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	mFollowCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
+	mFollowCamera->bUsePawnControlRotation = false;
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
+	OverheadWidget->SetupAttachment(RootComponent);
+}
+
+// Called when the game starts or when spawned
+void AGunman::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+// Called every frame
+void AGunman::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+// Called to bind functionality to input
+void AGunman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	// Set up action bindings
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(mMovementAction, ETriggerEvent::Triggered, this, &AGunman::Move);
+		EnhancedInputComponent->BindAction(mJumpAction, ETriggerEvent::Triggered, this, &AGunman::Jump);
+		EnhancedInputComponent->BindAction(mTurn, ETriggerEvent::Triggered, this, &AGunman::ChangeYaw);
+		EnhancedInputComponent->BindAction(mLookUp, ETriggerEvent::Triggered, this, &AGunman::ChangePitch);
+	}
+}
+
+void AGunman::ChangeYaw(const FInputActionValue& value)
+{
+	AddControllerYawInput(value.Get<float>());
+}
+
+void AGunman::ChangePitch(const FInputActionValue& value)
+{
+	AddControllerPitchInput(value.Get<float>() * mMouseSenstivity);
+}
+
+
+void AGunman::Move(const FInputActionValue& Value)
+{
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
+	}
+}

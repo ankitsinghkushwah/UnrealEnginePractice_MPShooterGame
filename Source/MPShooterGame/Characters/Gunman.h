@@ -26,6 +26,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PostInitializeComponents() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,6 +41,9 @@ protected:
 	UFUNCTION()
 	void ChangePitch(const FInputActionValue& value);
 
+	UFUNCTION()
+	void OnEquip();
+
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* mMovementAction;
 	UPROPERTY(EditAnywhere, Category=Input)
@@ -48,6 +52,8 @@ protected:
 	class UInputAction* mTurn;
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* mLookUp;
+	UPROPERTY(EditAnywhere, Category=Input)
+	class UInputAction* mEquip;
 	UPROPERTY(EditAnywhere, Category=Input)
 	float mMouseSenstivity = 0.1f;
 
@@ -66,4 +72,7 @@ private:
 
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AGunmanWeapon* LastWeapon);
+
+	UPROPERTY(VisibleAnywhere, Category = "Custom Components")
+	class UCombatComponent* CombatComponent = nullptr;
 };

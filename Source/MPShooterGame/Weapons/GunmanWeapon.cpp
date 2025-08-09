@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "MPShooterGame/Characters/Gunman.h"
+#include "MPShooterGame/Components/CombatComponent.h"
 
 // Sets default values
 AGunmanWeapon::AGunmanWeapon()

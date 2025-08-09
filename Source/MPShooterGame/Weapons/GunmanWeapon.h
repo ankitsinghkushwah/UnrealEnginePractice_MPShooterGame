@@ -6,6 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "GunmanWeapon.generated.h"
 
+UENUM(BlueprintType)
+enum EWeaponState : uint8
+{
+	EWS_NotEquipped UMETA(DisplayName = "Not Equipped"),
+	EWS_Equipped UMETA(DisplayName = "Equipped"),
+	EWS_Dropped UMETA(DisplayName = "Dropped"),
+	EWS_MAX UMETA(DisplayName = "Max")
+};
+
 UCLASS()
 class MPSHOOTERGAME_API AGunmanWeapon : public AActor
 {
@@ -36,4 +45,12 @@ private:
 	class USphereComponent* CollisionVolume = nullptr;
 	UPROPERTY(VisibleAnywhere, Category = "Custom Components")
 	class UWidgetComponent* PickUpWidget = nullptr;
+	UPROPERTY(VisibleAnywhere, Category = "Custom Components")
+	TEnumAsByte<EWeaponState> CurrentWeaponState = EWS_NotEquipped;
+
+public:
+	FORCEINLINE void SetWeaponState(EWeaponState state)
+	{
+		CurrentWeaponState = state;
+	}
 };

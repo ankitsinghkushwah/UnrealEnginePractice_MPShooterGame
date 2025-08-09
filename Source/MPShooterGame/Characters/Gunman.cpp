@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MPShooterGame/Components/CombatComponent.h"
 #include "MPShooterGame/Weapons/GunmanWeapon.h"
 #include "Net/UnrealNetwork.h"
 #include "Physics/Experimental/PhysScene_Chaos.h"
@@ -34,6 +35,9 @@ AGunman::AGunman()
 
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
+
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+	CombatComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -74,6 +78,7 @@ void AGunman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(mJumpAction, ETriggerEvent::Triggered, this, &AGunman::Jump);
 		EnhancedInputComponent->BindAction(mTurn, ETriggerEvent::Triggered, this, &AGunman::ChangeYaw);
 		EnhancedInputComponent->BindAction(mLookUp, ETriggerEvent::Triggered, this, &AGunman::ChangePitch);
+		EnhancedInputComponent->BindAction(mEquip, ETriggerEvent::Triggered, this, &AGunman::OnEquip);
 	}
 }
 
@@ -84,6 +89,16 @@ void AGunman::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLif
 	DOREPLIFETIME_CONDITION(AGunman, OverlappedWeapon, COND_OwnerOnly);
 }
 
+void AGunman::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (CombatComponent)
+	{
+		CombatComponent->Gunman = this;
+	}
+}
+
 void AGunman::ChangeYaw(const FInputActionValue& value)
 {
 	AddControllerYawInput(value.Get<float>());
@@ -92,6 +107,14 @@ void AGunman::ChangeYaw(const FInputActionValue& value)
 void AGunman::ChangePitch(const FInputActionValue& value)
 {
 	AddControllerPitchInput(value.Get<float>() * mMouseSenstivity);
+}
+
+void AGunman::OnEquip()
+{
+	if (CombatComponent && OverlappedWeapon && HasAuthority())
+	{
+		CombatComponent->EquipWeapon(OverlappedWeapon);
+	}
 }
 
 void AGunman::OnRep_OverlappingWeapon(AGunmanWeapon* LastWeapon)

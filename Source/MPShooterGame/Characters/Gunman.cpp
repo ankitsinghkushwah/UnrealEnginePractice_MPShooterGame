@@ -10,6 +10,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MPShooterGame/Weapons/GunmanWeapon.h"
+#include "Net/UnrealNetwork.h"
 #include "Physics/Experimental/PhysScene_Chaos.h"
 
 // Sets default values
@@ -46,6 +48,20 @@ void AGunman::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AGunman::SetOverlappingWeapon(class AGunmanWeapon* Weapon)
+{
+	if (Weapon == nullptr && IsLocallyControlled())
+	{
+		OverlappedWeapon->ShowPickupWidget(false);
+	}
+
+	OverlappedWeapon = Weapon;
+	if (OverlappedWeapon && IsLocallyControlled())
+	{
+		OverlappedWeapon->ShowPickupWidget(true);
+	}
+}
+
 // Called to bind functionality to input
 void AGunman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -61,6 +77,13 @@ void AGunman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+void AGunman::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AGunman, OverlappedWeapon, COND_OwnerOnly);
+}
+
 void AGunman::ChangeYaw(const FInputActionValue& value)
 {
 	AddControllerYawInput(value.Get<float>());
@@ -69,6 +92,18 @@ void AGunman::ChangeYaw(const FInputActionValue& value)
 void AGunman::ChangePitch(const FInputActionValue& value)
 {
 	AddControllerPitchInput(value.Get<float>() * mMouseSenstivity);
+}
+
+void AGunman::OnRep_OverlappingWeapon(AGunmanWeapon* LastWeapon)
+{
+	if (OverlappedWeapon)
+	{
+		OverlappedWeapon->ShowPickupWidget(true);
+	}
+	if (LastWeapon)
+	{
+		LastWeapon->ShowPickupWidget(false);
+	}
 }
 
 

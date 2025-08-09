@@ -15,7 +15,7 @@ void UOverheadWidget::SetDisplayText(FString InDisplayText)
 
 void UOverheadWidget::ShowPlayerNetRole(APawn* InPawn)
 {
-	ENetRole LocalRole = InPawn->GetRemoteRole();
+	ENetRole LocalRole = InPawn->GetLocalRole();
 
 	FString role = FString("Local Role : ") + StaticEnum<ENetRole>()->GetDisplayNameTextByValue(LocalRole).ToString();
 	SetDisplayText(role);

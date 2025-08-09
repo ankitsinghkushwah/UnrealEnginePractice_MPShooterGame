@@ -21,8 +21,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetOverlappingWeapon(class AGunmanWeapon* Weapon);
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,7 +40,6 @@ protected:
 	UFUNCTION()
 	void ChangePitch(const FInputActionValue& value);
 
-protected:
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* mMovementAction;
 	UPROPERTY(EditAnywhere, Category=Input)
@@ -53,8 +55,15 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class USpringArmComponent* mSpringArm;
 
-	class UCameraComponent* mFollowCamera;
+	class UCameraComponent* mFollowCamera = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* OverheadWidget;
+	class UWidgetComponent* OverheadWidget = nullptr;
+
+	//we are using OnRep_OverlappingWeapon because we don't want server to show PickUPWidget when this client overlaps with the weapon
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
+	class AGunmanWeapon* OverlappedWeapon = nullptr;
+
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(AGunmanWeapon* LastWeapon);
 };

@@ -111,11 +111,30 @@ void AGunman::ChangePitch(const FInputActionValue& value)
 
 void AGunman::OnEquip()
 {
-	if (CombatComponent && OverlappedWeapon && HasAuthority())
+	if (CombatComponent == nullptr)
+	{
+		return;
+	}
+	if (HasAuthority())
 	{
 		CombatComponent->EquipWeapon(OverlappedWeapon);
 	}
+	else
+	{
+		RPC_EquipButtonPressed();
+	}
 }
+
+void AGunman::RPC_EquipButtonPressed_Implementation()
+{
+	if (CombatComponent == nullptr || HasAuthority() == false)
+	{
+		return;
+	}
+
+	CombatComponent->EquipWeapon(OverlappedWeapon);
+}
+
 
 void AGunman::OnRep_OverlappingWeapon(AGunmanWeapon* LastWeapon)
 {

@@ -75,4 +75,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Custom Components")
 	class UCombatComponent* CombatComponent = nullptr;
+
+	UFUNCTION(Server, Reliable)
+	void RPC_EquipButtonPressed();
 };

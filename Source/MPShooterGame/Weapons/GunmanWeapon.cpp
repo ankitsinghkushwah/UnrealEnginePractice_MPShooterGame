@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "MPShooterGame/Characters/Gunman.h"
 #include "MPShooterGame/Components/CombatComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AGunmanWeapon::AGunmanWeapon()
@@ -48,10 +49,43 @@ void AGunmanWeapon::BeginPlay()
 	}
 }
 
+void AGunmanWeapon::OnRep_WeaponState()
+{
+	switch (CurrentWeaponState)
+	{
+	case EWS_Equipped:
+		ShowPickupWidget(false);
+		break;
+	}
+}
+
+void AGunmanWeapon::SetWeaponState(EWeaponState state)
+{
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	CurrentWeaponState = state;
+	switch (state)
+	{
+	case EWeaponState::EWS_Equipped:
+		CollisionVolume->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		break;
+	}
+}
+
 // Called every frame
 void AGunmanWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AGunmanWeapon::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AGunmanWeapon, CurrentWeaponState);
 }
 
 void AGunmanWeapon::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

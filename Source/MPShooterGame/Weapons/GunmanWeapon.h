@@ -23,7 +23,7 @@ class MPSHOOTERGAME_API AGunmanWeapon : public AActor
 public:
 	AGunmanWeapon();
 	virtual void Tick(float DeltaTime) override;
-
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	UFUNCTION()
 	void OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
@@ -45,12 +45,12 @@ private:
 	class USphereComponent* CollisionVolume = nullptr;
 	UPROPERTY(VisibleAnywhere, Category = "Custom Components")
 	class UWidgetComponent* PickUpWidget = nullptr;
-	UPROPERTY(VisibleAnywhere, Category = "Custom Components")
+	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere, Category = "Custom Components")
 	TEnumAsByte<EWeaponState> CurrentWeaponState = EWS_NotEquipped;
 
+	UFUNCTION()
+	void OnRep_WeaponState();
+
 public:
-	FORCEINLINE void SetWeaponState(EWeaponState state)
-	{
-		CurrentWeaponState = state;
-	}
+	void SetWeaponState(EWeaponState state);
 };

@@ -27,4 +27,6 @@ private:
 	bool mIsInAir = false;
 	UPROPERTY(BlueprintReadOnly, Category=Movement, meta=(AllowPrivateAccess=true))
 	bool mIsAccelerating = false;
+	UPROPERTY(BlueprintReadOnly, Category=Movement, meta=(AllowPrivateAccess=true))
+	bool mWeaponEquipped = false;
 };

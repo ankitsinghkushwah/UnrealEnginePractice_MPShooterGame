@@ -26,4 +26,8 @@ void UGunmanAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	mIsInAir = mGunman->GetCharacterMovement()->IsFalling();
 
 	mIsAccelerating = mGunman->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.0f;
+
+	mWeaponEquipped = mGunman->IsWeaponEquipped();
+
+	mIsCrouched = mGunman->IsCrouched();
 }

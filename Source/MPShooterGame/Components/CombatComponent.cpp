@@ -6,11 +6,19 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "MPShooterGame/Characters/Gunman.h"
 #include "MPShooterGame/Weapons/GunmanWeapon.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+void UCombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCombatComponent, EquippedWeapon);
 }
 
 void UCombatComponent::BeginPlay()

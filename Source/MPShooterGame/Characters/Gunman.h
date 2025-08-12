@@ -28,6 +28,9 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 
+	//Animation getters
+	bool IsWeaponEquipped() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,6 +47,9 @@ protected:
 	UFUNCTION()
 	void OnEquip();
 
+	UFUNCTION()
+	void OnCrouchButtonPress();
+
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* mMovementAction;
 	UPROPERTY(EditAnywhere, Category=Input)
@@ -54,6 +60,8 @@ protected:
 	class UInputAction* mLookUp;
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* mEquip;
+	UPROPERTY(EditAnywhere, Category=Input)
+	class UInputAction* mCrouch;
 	UPROPERTY(EditAnywhere, Category=Input)
 	float mMouseSenstivity = 0.1f;
 

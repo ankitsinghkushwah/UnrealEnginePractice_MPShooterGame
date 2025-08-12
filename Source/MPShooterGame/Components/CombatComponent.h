@@ -15,6 +15,8 @@ class MPSHOOTERGAME_API UCombatComponent : public UActorComponent
 
 public:
 	UCombatComponent();
+
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	friend class AGunman;
 
 public:
@@ -29,5 +31,7 @@ protected:
 
 private:
 	class AGunman* Gunman = nullptr;
+
+	UPROPERTY(Replicated)
 	AGunmanWeapon* EquippedWeapon = nullptr;;
 };

@@ -24,7 +24,7 @@ AGunman::AGunman()
 
 	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	mSpringArm->SetupAttachment(GetMesh());
-	mSpringArm->TargetArmLength = 600.0f;
+	mSpringArm->TargetArmLength = 400.0f;
 	mSpringArm->bUsePawnControlRotation = true;
 
 	mFollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -39,6 +39,8 @@ AGunman::AGunman()
 
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	CombatComponent->SetIsReplicated(true);
+
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -80,6 +82,7 @@ void AGunman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(mTurn, ETriggerEvent::Triggered, this, &AGunman::ChangeYaw);
 		EnhancedInputComponent->BindAction(mLookUp, ETriggerEvent::Triggered, this, &AGunman::ChangePitch);
 		EnhancedInputComponent->BindAction(mEquip, ETriggerEvent::Triggered, this, &AGunman::OnEquip);
+		EnhancedInputComponent->BindAction(mCrouch, ETriggerEvent::Triggered, this, &AGunman::OnCrouchButtonPress);
 	}
 }
 
@@ -98,6 +101,11 @@ void AGunman::PostInitializeComponents()
 	{
 		CombatComponent->Gunman = this;
 	}
+}
+
+bool AGunman::IsWeaponEquipped() const
+{
+	return CombatComponent && CombatComponent->EquippedWeapon;
 }
 
 void AGunman::ChangeYaw(const FInputActionValue& value)
@@ -124,6 +132,11 @@ void AGunman::OnEquip()
 	{
 		RPC_EquipButtonPressed();
 	}
+}
+
+void AGunman::OnCrouchButtonPress()
+{
+	IsCrouched() == false ? Crouch() : UnCrouch();
 }
 
 void AGunman::RPC_EquipButtonPressed_Implementation()

@@ -83,6 +83,8 @@ void AGunman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(mLookUp, ETriggerEvent::Triggered, this, &AGunman::ChangePitch);
 		EnhancedInputComponent->BindAction(mEquip, ETriggerEvent::Triggered, this, &AGunman::OnEquip);
 		EnhancedInputComponent->BindAction(mCrouch, ETriggerEvent::Triggered, this, &AGunman::OnCrouchButtonPress);
+		EnhancedInputComponent->BindAction(mAim, ETriggerEvent::Started, this, &AGunman::OnAimButtonPressed);
+		EnhancedInputComponent->BindAction(mAim, ETriggerEvent::Completed, this, &AGunman::OnAimButtonReleased);
 	}
 }
 
@@ -106,6 +108,11 @@ void AGunman::PostInitializeComponents()
 bool AGunman::IsWeaponEquipped() const
 {
 	return CombatComponent && CombatComponent->EquippedWeapon;
+}
+
+bool AGunman::IsAiming()
+{
+	return CombatComponent && CombatComponent->bAiming;
 }
 
 void AGunman::ChangeYaw(const FInputActionValue& value)
@@ -138,6 +145,23 @@ void AGunman::OnCrouchButtonPress()
 {
 	IsCrouched() == false ? Crouch() : UnCrouch();
 }
+
+void AGunman::OnAimButtonPressed()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->SetAiming(true);
+	}
+}
+
+void AGunman::OnAimButtonReleased()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->SetAiming(false);
+	}
+}
+
 
 void AGunman::RPC_EquipButtonPressed_Implementation()
 {

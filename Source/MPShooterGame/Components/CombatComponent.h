@@ -29,9 +29,22 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	void SetAiming(bool bIsAiming);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetAiming(bool bIsAiming);
+
+	UFUNCTION()
+	void dummy()
+	{
+	}
+
 private:
 	class AGunman* Gunman = nullptr;
 
 	UPROPERTY(Replicated)
-	AGunmanWeapon* EquippedWeapon = nullptr;;
+	AGunmanWeapon* EquippedWeapon = nullptr;
+
+	UPROPERTY(Replicated)
+	bool bAiming = false;
 };

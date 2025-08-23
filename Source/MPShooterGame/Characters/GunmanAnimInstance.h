@@ -31,4 +31,6 @@ private:
 	bool mWeaponEquipped = false;
 	UPROPERTY(BlueprintReadOnly, Category=Movement, meta=(AllowPrivateAccess=true))
 	bool mIsCrouched = false;
+	UPROPERTY(BlueprintReadOnly, Category=Movement, meta=(AllowPrivateAccess=true))
+	bool bIsAiming = false;
 };

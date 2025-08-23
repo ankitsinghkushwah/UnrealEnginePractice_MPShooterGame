@@ -31,6 +31,8 @@ public:
 	//Animation getters
 	bool IsWeaponEquipped() const;
 
+	bool IsAiming();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,6 +52,11 @@ protected:
 	UFUNCTION()
 	void OnCrouchButtonPress();
 
+	UFUNCTION()
+	void OnAimButtonPressed();
+	UFUNCTION()
+	void OnAimButtonReleased();
+
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* mMovementAction;
 	UPROPERTY(EditAnywhere, Category=Input)
@@ -62,6 +69,8 @@ protected:
 	class UInputAction* mEquip;
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* mCrouch;
+	UPROPERTY(EditAnywhere, Category=Input)
+	class UInputAction* mAim;
 	UPROPERTY(EditAnywhere, Category=Input)
 	float mMouseSenstivity = 0.1f;
 

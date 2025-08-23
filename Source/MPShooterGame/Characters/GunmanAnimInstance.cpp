@@ -30,4 +30,6 @@ void UGunmanAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	mWeaponEquipped = mGunman->IsWeaponEquipped();
 
 	mIsCrouched = mGunman->IsCrouched();
+
+	bIsAiming = mGunman->IsAiming();
 }
